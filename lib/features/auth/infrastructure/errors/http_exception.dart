@@ -1,8 +1,8 @@
-class HttpException extends Error {
+class HttpException<T> extends Error {
   final String message;
   final int? statusCode;
   final HttpExceptionType type;
-  final dynamic response;
+  final T? response;
 
   HttpException({
     required this.message,

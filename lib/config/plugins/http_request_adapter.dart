@@ -84,11 +84,11 @@ class HttpRequestAdapter {
           type: HttpExceptionType.connectionTimeout,
         );
       case DioExceptionType.badResponse:
-        return HttpException(
+        return HttpException<Response>(
             message: e.response?.statusMessage ?? 'Bad response',
             statusCode: e.response?.statusCode,
             type: _getHttpExceptionTypeFromStatusCode(e.response?.statusCode),
-            response: e.response as Response);
+            response: e.response);
       default:
         return HttpException(
           message: 'An unexpected error occurred',
