@@ -20,13 +20,17 @@ class AuthDatasourceImpl implements AuthDatasource {
       final user = UserMapper.userJsonToEntity(response.data);
       return user;
     } on HttpException catch (e) {
-      if (e.type == HttpExceptionType.badRequest) {
+      if (e.type == HttpExceptionType.unauthorized) {
         throw CustomError(
             e.response?.data['message'] ?? 'Credenciales incorrectas');
       }
 
       if (e.type == HttpExceptionType.connectionTimeout) {
         throw CustomError('Revisar conexión a internet');
+      }
+
+      if (e.type == HttpExceptionType.badRequest) {
+        throw CustomError(e.response?.data['message'] ?? 'Bad request');
       }
 
       throw Exception();

@@ -6,7 +6,8 @@ import 'package:teslo_shop/features/shared/infrastructure/inputs/inputs.dart';
 //! 3 - StateNotifierProvider - Consumir desde el exterior
 
 final registerFormProvider =
-    StateNotifierProvider<RegisterFormNotifier, RegisterFormState>((ref) {
+    StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
+        (ref) {
   final registerCallback = ref.watch(authProvider.notifier).registerUser;
 
   return RegisterFormNotifier(registerCallback: registerCallback);
@@ -61,8 +62,12 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     if (!state.isValid) return;
 
+    state = state.copyWith(isPosting: true);
+
     await registerCallback(
         state.email.value, state.password.value, state.fullName.value);
+
+    state = state.copyWith(isPosting: false);
   }
 
   _touchEveryField() {
