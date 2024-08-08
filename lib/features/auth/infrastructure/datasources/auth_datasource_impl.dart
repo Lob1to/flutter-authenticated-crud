@@ -67,8 +67,24 @@ class AuthDatasourceImpl implements AuthDatasource {
   }
 
   @override
-  Future<User> checkAuthStatus(String token) {
-    // TODO: implement checkAuthStatus
-    throw UnimplementedError();
+  Future<User> checkAuthStatus(String token) async {
+    try {
+      final response = await httpRequest.get('/auth/check-status', headers: {
+        'Authorization': 'Bearer $token',
+      });
+
+      final user = UserMapper.userJsonToEntity(response.data);
+      return user;
+    } on HttpException catch (e) {
+      if (e.type == HttpExceptionType.unauthorized) {
+        throw CustomError('Token incorrecto');
+      }
+      if (e.type == HttpExceptionType.connectionTimeout) {
+        throw CustomError('Revisar conexión a internet');
+      }
+      throw Exception();
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
